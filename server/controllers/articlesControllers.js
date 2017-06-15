@@ -1,5 +1,5 @@
 var articleModel = require('../models/articles')
-var ObjectId = require('mongoose').ObjectId
+var ObjectId = require('mongodb').ObjectId;
 
 var postArticle = function (req,res) {
   articleModel.create({
@@ -24,14 +24,14 @@ var updateArticle = function (req,res) {
     if (err) {
       res.send({err: `${err}`})
     } else {
-      result.title = result.title || req.body.title
-      result.content = result.content || req.body.content
-      result.category = result.category || req.body.category
+      result.title = req.body.title || result.title
+      result.content = req.body.content || result.content
+      result.category = req.body.category || result.category
       result.save(function (err,updated) {
         if (err) {
           res.send({'err' : `${err}`})
         } else {
-          res.send({msg: `Patch article ${req.params.id} success`})
+          res.send(updated)
         }
       })
     }
@@ -40,7 +40,8 @@ var updateArticle = function (req,res) {
 
 var deleteArticle = function (req,res) {
   console.log("Masuk Delete");
-  articleModel.delete({
+  console.log(req.decoded._id);
+  articleModel.deleteOne({
     _id: ObjectId(req.params.id),
     author: req.decoded._id
   }, function (err) {
@@ -63,6 +64,8 @@ var getArticles = function (req,res) {
 }
 
 var getArticle = function (req,res) {
+  console.log("Masuk Get Article");
+  console.log(req.params.id);
   articleModel.findOne({
     _id : ObjectId(req.params.id)
   }, function (err,result) {
