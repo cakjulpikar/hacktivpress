@@ -18,7 +18,8 @@ var postArticle = function (req,res) {
 
 var updateArticle = function (req,res) {
   articleModel.findOne({
-    author : req.decoded._id
+    _id: ObjectId(req.params.id),
+    author: req.decoded._id
   }, function (err,result) {
     if (err) {
       res.send({err: `${err}`})
@@ -26,11 +27,11 @@ var updateArticle = function (req,res) {
       result.title = result.title || req.body.title
       result.content = result.content || req.body.content
       result.category = result.category || req.body.category
-      result.save(function (err,result) {
+      result.save(function (err,updated) {
         if (err) {
           res.send({'err' : `${err}`})
         } else {
-          res.send(result)
+          res.send({msg: `Patch article ${req.params.id} success`})
         }
       })
     }
@@ -38,12 +39,10 @@ var updateArticle = function (req,res) {
 }
 
 var deleteArticle = function (req,res) {
-  articleModel.deleteOne({
-    $and: [{
-      _id : ObjectId(req.params.id)
-    },{
-      author : req.decoded.id
-    }]
+  console.log("Masuk Delete");
+  articleModel.delete({
+    _id: ObjectId(req.params.id),
+    author: req.decoded._id
   }, function (err) {
     if (err) {
       res.send({'err' : `${err}`})
@@ -54,7 +53,7 @@ var deleteArticle = function (req,res) {
 }
 
 var getArticles = function (req,res) {
-  articleModel.find({}, function (err,reesult) {
+  articleModel.find({}, function (err,result) {
     if (err) {
       res.send({'err' : `${err}`})
     } else {

@@ -33,7 +33,7 @@ var signin = function (req,res) {
         res.send({msg: `Username or password ${req.body.identity} not found`})
       } else {
         if (hash(req.body.password) == result.password ) {
-          res.send({token: jwt.sign({_id : result._id}, process.env.JWT_SECRET)})
+          res.send({token: jwt.sign({_id : result._id}, 'manintheironmask')})
         } else {
           res.send({msg: `Password not match for ${req.body.identity}`})
         }
