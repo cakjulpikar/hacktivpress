@@ -1,6 +1,7 @@
 var usersModel = require('../models/users')
 var hash = require('object-hash')
 var jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 var signup = function (req,res) {
   usersModel.create({
@@ -31,8 +32,8 @@ var signin = function (req,res) {
       if (result.length == 0) {
         res.send({msg: `Username or password ${req.body.identity} not found`})
       } else {
-        if (hash(req.body.password) == req.body.password ) {
-          res.send({token: jwt.sign({_id : result._id}, proccess.env.JWT_SECRET)})
+        if (hash(req.body.password) == result.password ) {
+          res.send({token: jwt.sign({_id : result._id}, process.env.JWT_SECRET)})
         } else {
           res.send({msg: `Password not match for ${req.body.identity}`})
         }
